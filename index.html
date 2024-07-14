@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Lectures</title>
+  <!-- Firebase SDK modules -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // my web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGI0gynje9rsK3rcTrLpI8KJsiLbB1fTc",
+      authDomain: "my-todo-app-9539c.firebaseapp.com",
+      databaseURL: "https://my-todo-app-9539c-default-rtdb.firebaseio.com",
+      projectId: "my-todo-app-9539c",
+      storageBucket: "my-todo-app-9539c.appspot.com",
+      messagingSenderId: "911488076702",
+      appId: "1:911488076702:web:a54ca02bb3230f252b648f",
+      measurementId: "G-1GRFGVDLY9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Function to fetch and display lectures from Firestore
+    async function fetchLectures() {
+      const lecturesCol = collection(db, 'lectures');
+      const querySnapshot = await getDocs(lecturesCol);
+      
+      querySnapshot.forEach((doc) => {
+        const lecture = doc.data();
+        const row = `
+          <tr>
+            <td>${lecture.id}</td>
+            <td>${lecture.modules}</td>
+            <td>${lecture.date}</td>
+            <td>${lecture.startTime}</td>
+            <td>${lecture.endTime}</td>
+            <td><i class="fas fa-clock"></i></td> <!-- Assuming alarm clock icon -->
+            <td>${lecture.nextSchedule}</td>
+            <td><div class="action-circle"><i class="fas fa-eye"></i></div></td> <!-- Eye icon -->
+          </tr>
+        `;
+        document.getElementById('lectures-body').innerHTML += row;
+      });
+    }
+
+    // Fetch lectures when the page loads
+    window.onload = fetchLectures;
+  </script>
+
+  <!-- Font Awesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: rgb(223, 221, 221);
+    }
+    .header {
+      color: rgb(29, 120, 177);
+    }
+    .label {
+      border: 1px solid rgb(246, 241, 241);
+      background-color: white;
+      padding: 5px;
+      display: inline-block;
+    }
+    .table-container {
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid rgb(231, 228, 228);
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color:rgb(248, 243, 243);
+    }
+    .action-circle {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-color: rgb(88, 171, 212);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+    }
+    .action-circle i {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="header"><b> Live Lectures for Lecturer</b></div>
+  <div class="header"><b>(Mr. Kasiita Tawfik)</b></div>
+  <div class="label">
+    Show All
+    <span>&#9660;</span> <!-- Dropdown arrow -->
+  </div>
+  <div class="table-container">
+    <table id="lectures-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Module(s)</th>
+          <th>Date</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Status</th>
+          <th>Next Schedule</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="lectures-body">
+        <!-- The data will be dynamically generated here from the databse -->
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
